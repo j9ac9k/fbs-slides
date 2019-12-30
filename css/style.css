@@ -1,3 +1,20 @@
 .reveal h1 { font-size: 1.5em; }
 
 .reveal h2 { font-size: 1.5em; }
+
+/* Style all font awesome icons */
+.fa {
+  padding: 20px;
+  font-size: 30px;
+  width: 50px;
+  text-align: center;
+  text-decoration: none;
+}
+
+div.a {
+	text-indent: 90px;
+}
+
+.fa-github {
+  background: "black";
+}

@@ -6,13 +6,16 @@ date: December 28, 2019
 
 ## Who Am I
 
-Ogi Moore
+<section style="text-align: left;">
 
-@ogimoore
+<div class="a">Ogi Moore</div>
 
-github.com/j9ac9k
+<a href="#" class="fa fa-twitter"></a> @ogimoore
 
-Technologist @ Sensory
+<i class="fa fa-github" aria-hidden="true"></i>github.com/j9ac9k
+
+<div class="a">Technologist @ Sensory</div>
+</section>
 
 <aside class="notes">
 - Write software to improve QoL for other researchers and linguists
@@ -30,7 +33,7 @@ my own definitions, and I am not an authority on this matter...
 
 "library" is meant to be used by other developers
 
-  * numpy, requests, etc..
+  * NumPy, requests, etc..
 
 . . .
 
@@ -46,7 +49,6 @@ my own definitions, and I am not an authority on this matter...
 ```
 pip install <library>
 ```
-
 
 ## Applications need to be distributed differently
 
@@ -72,13 +74,18 @@ Qt! (pronunced "cute", not "cue-tea")
 
 ::: incremental
 
-- C++ framework with python bindings available (pyside2, pyqt5)
+- C++ framework with python bindings available (PySide2, PyQt5)
   - best to abstract differences away by using `qtpy` library
 - it's a _huge_ framework
-  - offers a lot more than just GUI elements
 - great add ons
   - pyqtgraph
   - pytest-qt
+
+:::
+
+::: notes
+
+discuss interface w/ hardware (QAudio), SQL (QSql), OS-integration, network communication objects
 
 :::
 
@@ -89,7 +96,7 @@ Qt! (pronunced "cute", not "cue-tea")
 # How should we deploy a GUI App?
 
 - make it into a wheel and upload to pypi? 
-  - Sure, but end users may not have python installed [relevant xkcd](https://xkcd.com/1987/)
+  - Sure, but end users may not have python installed [[relevant xkcd - 1987]](https://xkcd.com/1987/)
 
 ::: incremental
 
@@ -100,10 +107,10 @@ Qt! (pronunced "cute", not "cue-tea")
 ## Something like this would be nice
 
 :::::::::::::: {.columns}
-::: {.column width="50%"}
+::: {.column width="70%"}
 <img class="plain"  src="./images/installer-windows.png"/>
 :::
-::: {.column width="50%"}
+::: {.column width="30%"}
 <img class="plain"  src="./images/installer-mac.png"/>
 :::
 ::::::::::::::
@@ -112,22 +119,22 @@ Qt! (pronunced "cute", not "cue-tea")
 
 . . .
 
-but it's tricky....
+but it's tricky...
 
 ## The fbs library
 
-* with fbs, we can create native installers (screenshot of windows installer, linux installer, macOS dmg)
-* have executables to run to start without command line usage
-* has awesome `fbs startproject` command to create a bare minimum example that you can incorporate/modify for your project
+* with fbs, we can create native installers
+* generate executables can be launched like any other application you install
+* has awesome `fbs startproject` command to create a bare minimum example that you can modify for your project
 
 ## fbs does have requirements...
 
 ::: incremental
 
-* application needs to be a PyQt5/PySide2 application
+* needs to be a `PyQt5`/`PySide2` application
 * project must have specific directory structure
-* build.json to define project criteria
-* requirements/base.txt
+* `base.json` to define project parameters
+* `requirements/base.txt`
   * in my CI process I just run
 
      ```
@@ -140,33 +147,36 @@ but it's tricky....
 
 ## How to use fbs?
 
-. . .
+::: incremental
 
 - `fbs freeze` - Converts your python package into a stand-alone executable (via pyinstaller)
-
-. . .
-
 - `fbs installer` - Bundles your executable into a single file installer 
   - AppSetup.exe for Windows (using `NSIS`)
   - App.dmg for macOS (using `create-dmg`)
+    - `create-dmg` is bundled with `fbs`
   - App.deb for Ubuntu/Debian (using `fpm`)
+
+:::
 
 ## More considerations
 
 - windows installers can only be created on windows machines
   - same with macOS and linux 
 - ubuntu needs a `fpm` to make the .deb packages
-- windows needs `pypiwin32`, windows10 SDK, Visual C++ redistributables
+- windows needs `pypiwin32`, Windows10 SDK, Visual C++ redistributables and `NSIS`
 - really annoying to setup a bunch of VMs and do manually
 
 ## Runs from source != executable will run
 
-- pyinstaller is used when creating the executables
-- it may not grab one of your dependencies and you get a runtime error when trying to launch teh application
-  - this happened with numpy 1.17.0
-  - scipy 1.3.1 → 1.3.2+ on Windows
-  - many other instances too...
-- suggest you test your executable before bundling into the installer
+::: incremental
+
+- executable creation may not grab your dependencies correctly, or something else can go wrong, some examples include
+  - with NumPy 1.17.0 pyinstaller did not grab `numpy.random.common`
+  - SciPy 1.3.1 → 1.3.2+ had Windows based .dll's relocated, pyinstaller did not grab them
+  - app referencing the current git commit hash
+  - writing a log file to the project main directory 
+
+:::
 
 ::: notes
 
@@ -175,9 +185,10 @@ pin your dependency versions so you can go in your git history and evaluate what
 :::
 
 ## Testing the Executable
+
 - Start the application wait 10 seconds, kill it by name
   - If you get an error when killing the application, it means it didn't start successfully, and you need to investigate more
-  - If it kills without an error code, it means you application was running :thumbsup:
+  - If it kills without an error code, it means you application was running 👍
   - trickier on windows, need to make into non-windowed executable first, test, then make into windowed executable
 
 ## How to test executables
@@ -189,7 +200,7 @@ target/App/App & sleep 10 ; kill $!
 # macOS
 (target/App.app/Contents/MacOS/App) & sleep 10 ; kill $!
 
-# windows
+# Windows
 start target\App\App.exe & waitfor timeVoid /t 10 2>NUL & taskkill /im App.exe /f
 ```
 
@@ -201,7 +212,11 @@ start target\App\App.exe & waitfor timeVoid /t 10 2>NUL & taskkill /im App.exe /
 - make installers artifcats
 <img class="plain"  src="./images/pipelines.png"/>
 
+::: notes
 
+make sure to ask the auddience how many are familiar with CI systems in general...
+
+:::
 
 # Demo Fred
 
@@ -213,13 +228,37 @@ start target\App\App.exe & waitfor timeVoid /t 10 2>NUL & taskkill /im App.exe /
 
 ::: incremental
 
-- Qt framework is amazing, if you need to make a GUI application, and want to use python, it is an amazing way to go
-- fbs can turn your GUI application into an installable application by leveraging pyinstaller and other dependencies
+- Qt framework is amazing, if you need to make a GUI application, and want to use python, it is a fantastic way to go
+- `fbs` can bundle your GUI application into an installable package by leveraging pyinstaller and other dependencies
 - process is _very_ fragile, care must be taken to ensure your application was bundled successfully
 - pin your runtime dependencies
 - use a CI service, this is really a pain to do manually
 
 :::
 
+::: notes
+
+fbs is effectively a convinience wrapper, depending on what you are doing, you may be able to remove it and do things manually yourself
+
+:::
+
 # Future Work
+
 - Create a cookie cutter template that generates the right directory strcture and does simple CI configs from the get go
+
+# References
+
+- macOS walkthrough - https://git.io/JeAfJ
+- fbs
+  - https://build-system.fman.io/
+  - https://github.com/mherrmann/fbs
+- pyinstaller - https://www.pyinstaller.org/
+- Qt - https://doc.qt.io/qt-5/
+- qtpy - https://github.com/spyder-ide/qtpy
+
+
+# Content Created Using
+
+- reveal.js - javascript library used to show presentation
+- pandoc - contents started off as markdown, used pandoc to convert to revealjs
+- fontawesome - for some icons
