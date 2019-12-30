@@ -55,7 +55,9 @@ pip install <library>
 ::: incremental
 
 * users may or may not have python installed
+  * if they don't the last thing you want to maintain is a set of instructions that universally apply for setting up a python environment on each OS
 * users may not feel comfortable interacting with the command line
+* you may use a dependency that is not on PyPI
 
 :::
 
@@ -63,12 +65,14 @@ pip install <library>
 
 ::: incremental
 
-Qt! (pronunced "cute", not "cue-tea")
+Qt (pronunced "cute", not "cue-tea")
 
 :::
 
 - cross-platform framework to create modern and native looking GUIs
-
+- considered most full-featured, powerful option available for python users
+- alternatives like tkinter, wxPython, and kivy exist, and in some cases may be preferred
+  - realistically most "alternatives" are effetively web services
 
 ## Little more on Qt
 
@@ -95,8 +99,8 @@ discuss interface w/ hardware (QAudio), SQL (QSql), OS-integration, network comm
 
 # How should we deploy a GUI App?
 
-- make it into a wheel and upload to pypi? 
-  - Sure, but end users may not have python installed [[relevant xkcd - 1987]](https://xkcd.com/1987/)
+- Make it into a wheel and upload to PyPI? 
+  - Does not address the problems listed earlier...end users may not be developers
 
 ::: incremental
 
@@ -108,10 +112,10 @@ discuss interface w/ hardware (QAudio), SQL (QSql), OS-integration, network comm
 
 :::::::::::::: {.columns}
 ::: {.column width="70%"}
-<img class="plain"  src="./images/installer-windows.png"/>
+<img class="plain" src="./images/installer-windows.png"/>
 :::
 ::: {.column width="30%"}
-<img class="plain"  src="./images/installer-mac.png"/>
+<img class="plain" src="./images/installer-mac.png"/>
 :::
 ::::::::::::::
 
@@ -134,7 +138,7 @@ but it's tricky...
 * needs to be a `PyQt5`/`PySide2` application
 * project must have specific directory structure
 * `base.json` to define project parameters
-* `requirements/base.txt`
+* `requirements/base.txt`to define dependencies
   * in my CI process I just run
 
      ```
@@ -160,17 +164,17 @@ but it's tricky...
 
 ## More considerations
 
-- windows installers can only be created on windows machines
+- Windows installers can only be created on windows machines
   - same with macOS and linux 
-- ubuntu needs a `fpm` to make the .deb packages
-- windows needs `pypiwin32`, Windows10 SDK, Visual C++ redistributables and `NSIS`
-- really annoying to setup a bunch of VMs and do manually
+- Ubuntu needs a `fpm` to make the .deb packages
+- Windows needs `pypiwin32`, Windows10 SDK, Visual C++ redistributables and `NSIS`
+- Really annoying to setup a bunch of VMs and do manually
 
 ## Runs from source != executable will run
 
 ::: incremental
 
-- executable creation may not grab your dependencies correctly, or something else can go wrong, some examples include
+- Executable creation may not capture your dependencies correctly, or something else can go wrong
   - with NumPy 1.17.0 pyinstaller did not grab `numpy.random.common`
   - SciPy 1.3.1 → 1.3.2+ had Windows based .dll's relocated, pyinstaller did not grab them
   - app referencing the current git commit hash
@@ -189,7 +193,7 @@ pin your dependency versions so you can go in your git history and evaluate what
 - Start the application wait 10 seconds, kill it by name
   - If you get an error when killing the application, it means it didn't start successfully, and you need to investigate more
   - If it kills without an error code, it means you application was running 👍
-  - trickier on windows, need to make into non-windowed executable first, test, then make into windowed executable
+  - Trickier on windows, need to make into non-windowed executable first, test, then make into windowed executable
 
 ## How to test executables
 
@@ -262,3 +266,4 @@ fbs is effectively a convinience wrapper, depending on what you are doing, you m
 - reveal.js - javascript library used to show presentation
 - pandoc - contents started off as markdown, used pandoc to convert to revealjs
 - fontawesome - for some icons
+- sublimetext - editor I decided to use
