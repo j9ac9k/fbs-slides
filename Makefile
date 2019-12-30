@@ -4,5 +4,13 @@ make get-reveal:
 	mv reveal.js-master reveal.js
 
 slides: ## create slides
-	/usr/local/bin/pandoc -t revealjs -s -o slides.html slides.md -V revealjs-url=https://revealjs.com -V theme=beige -V height=900 -V width=1024 --resource-path=images
+	/usr/local/bin/pandoc slides.md \
+		--css="./css/style.css" \
+		--standalone \
+		--slide-level=2 \
+		-t revealjs \
+	  	-V revealjs-url=./reveal.js \
+	  	-V theme=white \
+	  	-V width=1024 \
+		-o slides.html \
 

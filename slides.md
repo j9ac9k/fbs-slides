@@ -14,11 +14,13 @@ github.com/j9ac9k
 
 Technologist @ Sensory
 
+<aside class="notes">
+- Write software to improve QoL for other researchers and linguists
+</aside>
+
 # What are we talking about?
 
 How can we distribute our python GUI applications to a widespread audience...
-
----
 
 ## Difference between a library and an application
 
@@ -36,8 +38,6 @@ my own definitions, and I am not an authority on this matter...
 
   * youtube-dl, spyder, qutebrowser...
 
----
-
 ## Libraries should be packaged for developers
 
 1. Create python wheel with setuptools (or flit)
@@ -47,7 +47,6 @@ my own definitions, and I am not an authority on this matter...
 pip install <library>
 ```
 
----
 
 ## Applications need to be distributed differently
 
@@ -58,42 +57,56 @@ pip install <library>
 
 :::
 
----
+# How do we make a GUI application?
 
-# How do we make a cross-platform GUI application?
+::: incremental
 
-. . .
+Qt! (pronunced "cute", not "cue-tea")
 
-Qt! (pronunced "cute")
+:::
 
 - cross-platform framework to create modern and native looking GUIs
+
+
+## Little more on Qt
+
+::: incremental
+
 - C++ framework with python bindings available (pyside2, pyqt5)
   - best to abstract differences away by using `qtpy` library
 - it's a _huge_ framework
   - offers a lot more than just GUI elements
+- great add ons
+  - pyqtgraph
+  - pytest-qt
 
----
+:::
 
 ## Screenshot
 
 <img class="plain"  src="./images/fred.png"/>
 
-<!-- ![Fred Screenshot](./images/fred.png "") -->
-
----
-
-# How to deploy GUI applications?
+# How should we deploy a GUI App?
 
 - make it into a wheel and upload to pypi? 
-  - Sure, but end users may not have python installed
-  - End users may not know how to install python... [xkcd reference]
-  - it's not a library, end-users may not be developers comfortable working from the command line
+  - Sure, but end users may not have python installed [relevant xkcd](https://xkcd.com/1987/)
 
-. . .
+::: incremental
 
 - can we create a "native" installer like any other application we install on our machines?
 
----
+:::
+
+## Something like this would be nice
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+<img class="plain"  src="./images/installer-windows.png"/>
+:::
+::: {.column width="50%"}
+<img class="plain"  src="./images/installer-mac.png"/>
+:::
+::::::::::::::
 
 ## Sure we can!
 
@@ -101,33 +114,29 @@ Qt! (pronunced "cute")
 
 but it's tricky....
 
----
-
 ## The fbs library
 
 * with fbs, we can create native installers (screenshot of windows installer, linux installer, macOS dmg)
 * have executables to run to start without command line usage
 * has awesome `fbs startproject` command to create a bare minimum example that you can incorporate/modify for your project
 
----
-
 ## fbs does have requirements...
 
 ::: incremental
 
-* needs to be a PyQt5/PySide2 application
-* right directory structure
-* build.json
+* application needs to be a PyQt5/PySide2 application
+* project must have specific directory structure
+* build.json to define project criteria
 * requirements/base.txt
   * in my CI process I just run
 
-     ```cp requirements.txt requirements/base.txt``` 
+     ```
+     cp requirements.txt requirements/base.txt
+     ``` 
 
 * docs are _very_ good, source code is easy to read too...
 
 :::
-
----
 
 ## How to use fbs?
 
@@ -142,8 +151,6 @@ but it's tricky....
   - App.dmg for macOS (using `create-dmg`)
   - App.deb for Ubuntu/Debian (using `fpm`)
 
----
-
 ## More considerations
 
 - windows installers can only be created on windows machines
@@ -151,8 +158,6 @@ but it's tricky....
 - ubuntu needs a `fpm` to make the .deb packages
 - windows needs `pypiwin32`, windows10 SDK, Visual C++ redistributables
 - really annoying to setup a bunch of VMs and do manually
-
----
 
 ## Runs from source != executable will run
 
@@ -169,45 +174,33 @@ pin your dependency versions so you can go in your git history and evaluate what
 
 :::
 
----
-
 ## Testing the Executable
 - Start the application wait 10 seconds, kill it by name
   - If you get an error when killing the application, it means it didn't start successfully, and you need to investigate more
   - If it kills without an error code, it means you application was running :thumbsup:
   - trickier on windows, need to make into non-windowed executable first, test, then make into windowed executable
 
---- 
+## How to test executables
 
-## Commmands to test executables
-
-Linux:
-
-```bash
+```
+# Linux
 target/App/App & sleep 10 ; kill $!
-```
 
-macOS:
-
-```bash
+# macOS
 (target/App.app/Contents/MacOS/App) & sleep 10 ; kill $!
-```
 
-Windows:
-
-```cmd
+# windows
 start target\App\App.exe & waitfor timeVoid /t 10 2>NUL & taskkill /im App.exe /f
 ```
 
----
-
 ## CI to the rescue
-- Following services offer free cross-platform CI services (for open-source projects)
+- Many CI services free for open source projects
   - azure pipelines
   - travis
   - github actions
-- make installers artifcats, so you can download/distribute them
-- [show screenshot of gitlab pipeline]
+- make installers artifcats
+<img class="plain"  src="./images/pipelines.png"/>
+
 
 
 # Demo Fred
