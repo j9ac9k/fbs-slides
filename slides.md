@@ -192,7 +192,7 @@ pin your dependency versions so you can go in your git history and evaluate what
 
 - Start the application wait 10 seconds, kill it by name
   - If you get an error when killing the application, it means it didn't start successfully, and you need to investigate more
-  - If it kills without an error code, it means you application was running 👍
+  - If it kills without an error code, it means your application was running 👍
   - Trickier on windows, need to make into non-windowed executable first, test, then make into windowed executable
 
 ## How to test executables
@@ -213,7 +213,7 @@ start target\App\App.exe & waitfor timeVoid /t 10 2>NUL & taskkill /im App.exe /
   - azure pipelines
   - travis
   - github actions
-- make installers artifcats
+- make installers artifacts
 <img class="plain"  src="./images/pipelines.png"/>
 
 ::: notes
@@ -224,8 +224,8 @@ make sure to ask the auddience how many are familiar with CI systems in general.
 
 # Demo Fred
 
-# Bonus - Codesigning
-- codesign your application to skip warnings
+# Bonus - Code-Signing
+- code-sign your application to skip scary warnings when installing
   - isn't free...
 
 # Wrap up
