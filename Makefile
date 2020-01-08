@@ -12,5 +12,5 @@ slides: ## create slides
 	  	-V revealjs-url=https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0 \
 	  	-V theme=white \
 	  	-V width=1024 \
-		-o slides.html \
+		-o index.html \
 
