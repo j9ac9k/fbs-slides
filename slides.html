@@ -1,0 +1,264 @@
+<section id="who-am-i" class="slide level2">
+<h2>Who Am I</h2>
+<section style="text-align: left;">
+<div class="a">
+Ogi Moore
+</div>
+<p><a href="#" class="fa fa-twitter"></a> <span class="citation" data-cites="ogimoore">@ogimoore</span></p>
+<p><i class="fa fa-github" aria-hidden="true"></i>github.com/j9ac9k</p>
+<div class="a">
+Technologist @ Sensory
+</div>
+</section>
+<aside class="notes">
+<ul>
+<li>Write software to improve QoL for other researchers and linguists</li>
+</ul>
+</aside>
+</section>
+<section><section id="what-are-we-talking-about" class="title-slide slide level1"><h1>What are we talking about?</h1><p>How can we distribute our python GUI applications to a widespread audience…</p></section>
+<section id="difference-between-a-library-and-an-application" class="slide level2">
+<h2>Difference between a library and an application</h2>
+<p>my own definitions, and I am not an authority on this matter…</p>
+<div class="fragment">
+<p>“library” is meant to be used by other developers</p>
+<ul>
+<li>NumPy, requests, etc..</li>
+</ul>
+</div>
+<div class="fragment">
+<p>“application” is meant to be used by end-users</p>
+<ul>
+<li>youtube-dl, spyder, qutebrowser…</li>
+</ul>
+</div>
+</section>
+<section id="libraries-should-be-packaged-for-developers" class="slide level2">
+<h2>Libraries should be packaged for developers</h2>
+<ol type="1">
+<li>Create python wheel with setuptools (or flit)</li>
+<li>Upload to pypi, and then anyone can install via pip</li>
+</ol>
+<pre><code>pip install &lt;library&gt;</code></pre>
+</section>
+<section id="applications-need-to-be-distributed-differently" class="slide level2">
+<h2>Applications need to be distributed differently</h2>
+<div>
+<ul>
+<li class="fragment">users may or may not have python installed
+<ul>
+<li class="fragment">if they don’t the last thing you want to maintain is a set of instructions that universally apply for setting up a python environment on each OS</li>
+</ul></li>
+<li class="fragment">users may not feel comfortable interacting with the command line</li>
+<li class="fragment">you may use a dependency that is not on PyPI</li>
+</ul>
+</div>
+</section></section>
+<section><section id="how-do-we-make-a-gui-application" class="title-slide slide level1"><h1>How do we make a GUI application?</h1><div>
+<p>Qt (pronunced “cute”, not “cue-tea”)</p>
+</div>
+<ul>
+<li>cross-platform framework to create modern and native looking GUIs</li>
+<li>considered most full-featured, powerful option available for python users</li>
+<li>alternatives like tkinter, wxPython, and kivy exist, and in some cases may be preferred
+<ul>
+<li>realistically most “alternatives” are effetively web services</li>
+</ul></li>
+</ul></section>
+<section id="little-more-on-qt" class="slide level2">
+<h2>Little more on Qt</h2>
+<div>
+<ul>
+<li class="fragment">C++ framework with python bindings available (PySide2, PyQt5)
+<ul>
+<li class="fragment">best to abstract differences away by using <code>qtpy</code> library</li>
+</ul></li>
+<li class="fragment">it’s a <em>huge</em> framework</li>
+<li class="fragment">great add ons
+<ul>
+<li class="fragment">pyqtgraph</li>
+<li class="fragment">pytest-qt</li>
+</ul></li>
+</ul>
+</div>
+<aside class="notes">
+<p>discuss interface w/ hardware (QAudio), SQL (QSql), OS-integration, network communication objects</p>
+</aside>
+</section>
+<section id="screenshot" class="slide level2">
+<h2>Screenshot</h2>
+<p><img class="plain"  src="./images/fred.png"/></p>
+</section></section>
+<section><section id="how-should-we-deploy-a-gui-app" class="title-slide slide level1"><h1>How should we deploy a GUI App?</h1><ul>
+<li>Make it into a wheel and upload to PyPI?
+<ul>
+<li>Does not address the problems listed earlier…end users may not be developers</li>
+</ul></li>
+</ul>
+<div>
+<ul>
+<li class="fragment">can we create a “native” installer like any other application we install on our machines?</li>
+</ul>
+</div></section>
+<section id="something-like-this-would-be-nice" class="slide level2">
+<h2>Something like this would be nice</h2>
+<div class="columns">
+<div class="column" style="width:70%;">
+<p><img class="plain" src="./images/installer-windows.png"/></p>
+</div><div class="column" style="width:30%;">
+<p><img class="plain" src="./images/installer-mac.png"/></p>
+</div>
+</div>
+</section>
+<section id="sure-we-can" class="slide level2">
+<h2>Sure we can!</h2>
+<div class="fragment">
+<p>but it’s tricky…</p>
+</div>
+</section>
+<section id="the-fbs-library" class="slide level2">
+<h2>The fbs library</h2>
+<ul>
+<li>with fbs, we can create native installers</li>
+<li>generate executables can be launched like any other application you install</li>
+<li>has awesome <code>fbs startproject</code> command to create a bare minimum example that you can modify for your project</li>
+</ul>
+</section>
+<section id="fbs-does-have-requirements" class="slide level2">
+<h2>fbs does have requirements…</h2>
+<div>
+<ul>
+<li class="fragment">needs to be a <code>PyQt5</code>/<code>PySide2</code> application</li>
+<li class="fragment">project must have specific directory structure</li>
+<li class="fragment"><code>base.json</code> to define project parameters</li>
+<li class="fragment"><code>requirements/base.txt</code>to define dependencies
+<ul>
+<li class="fragment"><p>in my CI process I just run</p>
+<pre><code>cp requirements.txt requirements/base.txt</code></pre></li>
+</ul></li>
+<li class="fragment">docs are <em>very</em> good, source code is easy to read too…</li>
+</ul>
+</div>
+</section>
+<section id="how-to-use-fbs" class="slide level2">
+<h2>How to use fbs?</h2>
+<div>
+<ul>
+<li class="fragment"><code>fbs freeze</code> - Converts your python package into a stand-alone executable (via pyinstaller)</li>
+<li class="fragment"><code>fbs installer</code> - Bundles your executable into a single file installer
+<ul>
+<li class="fragment">AppSetup.exe for Windows (using <code>NSIS</code>)</li>
+<li class="fragment">App.dmg for macOS (using <code>create-dmg</code>)
+<ul>
+<li class="fragment"><code>create-dmg</code> is bundled with <code>fbs</code></li>
+</ul></li>
+<li class="fragment">App.deb for Ubuntu/Debian (using <code>fpm</code>)</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="more-considerations" class="slide level2">
+<h2>More considerations</h2>
+<ul>
+<li>Windows installers can only be created on windows machines
+<ul>
+<li>same with macOS and linux</li>
+</ul></li>
+<li>Ubuntu needs a <code>fpm</code> to make the .deb packages</li>
+<li>Windows needs <code>pypiwin32</code>, Windows10 SDK, Visual C++ redistributables and <code>NSIS</code></li>
+<li>Really annoying to setup a bunch of VMs and do manually</li>
+</ul>
+</section>
+<section id="runs-from-source-executable-will-run" class="slide level2">
+<h2>Runs from source != executable will run</h2>
+<div>
+<ul>
+<li class="fragment">Executable creation may not capture your dependencies correctly, or something else can go wrong
+<ul>
+<li class="fragment">with NumPy 1.17.0 pyinstaller did not grab <code>numpy.random.common</code></li>
+<li class="fragment">SciPy 1.3.1 → 1.3.2+ had Windows based .dll’s relocated, pyinstaller did not grab them</li>
+<li class="fragment">app referencing the current git commit hash</li>
+<li class="fragment">writing a log file to the project main directory</li>
+</ul></li>
+</ul>
+</div>
+<aside class="notes">
+<p>pin your dependency versions so you can go in your git history and evaluate what dependency update broke things</p>
+</aside>
+</section>
+<section id="testing-the-executable" class="slide level2">
+<h2>Testing the Executable</h2>
+<ul>
+<li>Start the application wait 10 seconds, kill it by name
+<ul>
+<li>If you get an error when killing the application, it means it didn’t start successfully, and you need to investigate more</li>
+<li>If it kills without an error code, it means your application was running 👍</li>
+<li>Trickier on windows, need to make into non-windowed executable first, test, then make into windowed executable</li>
+</ul></li>
+</ul>
+</section>
+<section id="how-to-test-executables" class="slide level2">
+<h2>How to test executables</h2>
+<pre><code># Linux
+target/App/App &amp; sleep 10 ; kill $!
+
+# macOS
+(target/App.app/Contents/MacOS/App) &amp; sleep 10 ; kill $!
+
+# Windows
+start target\App\App.exe &amp; waitfor timeVoid /t 10 2&gt;NUL &amp; taskkill /im App.exe /f</code></pre>
+</section>
+<section id="ci-to-the-rescue" class="slide level2">
+<h2>CI to the rescue</h2>
+<ul>
+<li>Many CI services free for open source projects
+<ul>
+<li>azure pipelines</li>
+<li>travis</li>
+<li>github actions</li>
+</ul></li>
+<li>make installers artifacts <img class="plain"  src="./images/pipelines.png"/></li>
+</ul>
+<aside class="notes">
+<p>make sure to ask the auddience how many are familiar with CI systems in general…</p>
+</aside>
+</section></section>
+<section id="demo-fred" class="title-slide slide level1"><h1>Demo Fred</h1></section>
+<section id="bonus---code-signing" class="title-slide slide level1"><h1>Bonus - Code-Signing</h1><ul>
+<li>code-sign your application to skip scary warnings when installing
+<ul>
+<li>isn’t free…</li>
+</ul></li>
+</ul></section>
+<section id="wrap-up" class="title-slide slide level1"><h1>Wrap up</h1><div>
+<ul>
+<li class="fragment">Qt framework is amazing, if you need to make a GUI application, and want to use python, it is a fantastic way to go</li>
+<li class="fragment"><code>fbs</code> can bundle your GUI application into an installable package by leveraging pyinstaller and other dependencies</li>
+<li class="fragment">process is <em>very</em> fragile, care must be taken to ensure your application was bundled successfully</li>
+<li class="fragment">pin your runtime dependencies</li>
+<li class="fragment">use a CI service, this is really a pain to do manually</li>
+</ul>
+</div>
+<aside class="notes">
+<p>fbs is effectively a convinience wrapper, depending on what you are doing, you may be able to remove it and do things manually yourself</p>
+</aside></section>
+<section id="future-work" class="title-slide slide level1"><h1>Future Work</h1><ul>
+<li>Create a cookie cutter template that generates the right directory strcture and does simple CI configs from the get go</li>
+</ul></section>
+<section id="references" class="title-slide slide level1"><h1>References</h1><ul>
+<li>macOS walkthrough - https://git.io/JeAfJ</li>
+<li>fbs
+<ul>
+<li>https://build-system.fman.io/</li>
+<li>https://github.com/mherrmann/fbs</li>
+</ul></li>
+<li>pyinstaller - https://www.pyinstaller.org/</li>
+<li>Qt - https://doc.qt.io/qt-5/</li>
+<li>qtpy - https://github.com/spyder-ide/qtpy</li>
+</ul></section>
+<section id="content-created-using" class="title-slide slide level1"><h1>Content Created Using</h1><ul>
+<li>reveal.js - javascript library used to show presentation</li>
+<li>pandoc - contents started off as markdown, used pandoc to convert to revealjs</li>
+<li>fontawesome - for some icons</li>
+<li>sublimetext - editor I decided to use</li>
+</ul></section>
